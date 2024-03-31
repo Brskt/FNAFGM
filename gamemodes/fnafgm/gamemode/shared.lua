@@ -341,13 +341,14 @@ function GM:LoadLanguage(lang)
 	if lang != "" and GAMEMODE.Strings[lang] then
 		GAMEMODE.TranslatedStrings = GAMEMODE.Strings[lang]
 		GAMEMODE:Log("'" .. lang .. "' strings loaded!")
-	elseif lang != "" then
-		table.Empty(GAMEMODE.TranslatedStrings)
-		GAMEMODE:Log("'" .. lang .. "' is not supported! Default strings loaded!")
+	else
+		GAMEMODE.TranslatedStrings = GAMEMODE.Strings.en
+		local logMessage = lang != "" and ("'" .. lang .. "' is not supported! Default strings loaded!") or "Default strings loaded!"
+		GAMEMODE:Log(logMessage)
 	end
 
 	if CLIENT then
-		language.Add("fnafgm_animatronic", tostring(GAMEMODE.TranslatedStrings.animatronic or GAMEMODE.Strings.en.animatronic))
+		language.Add("fnafgm_animatronic", tostring(GAMEMODE.TranslatedStrings.animatronic or "Animatronic"))
 	end
 
 end

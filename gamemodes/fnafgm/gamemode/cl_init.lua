@@ -591,7 +591,12 @@ function GM:HUDPaint()
 				end
 
 				draw.DrawText(time .. " " .. AMPM, "FNAFGMTIME", ScrW() - 52, H, GAMEMODE.Colors_default, TEXT_ALIGN_RIGHT)
-				draw.DrawText(nighttxt .. " " .. night, "FNAFGMNIGHT", ScrW() - 64, H + 64, GAMEMODE.Colors_default, TEXT_ALIGN_RIGHT)
+				
+				if nighttxt != "" then
+					draw.DrawText(nighttxt .. " " .. night, "FNAFGMNIGHT", ScrW() - 64, H + 64, GAMEMODE.Colors_default, TEXT_ALIGN_RIGHT)
+				else
+					draw.DrawText(tostring(night), "FNAFGMNIGHT", ScrW() - 64, H + 64, GAMEMODE.Colors_default, TEXT_ALIGN_RIGHT)
+				end
 
 				if power != 0 then draw.DrawText((GAMEMODE.TranslatedStrings.powerleft or GAMEMODE.Strings.en.powerleft) .. power .. "%", "FNAFGMNIGHT", 64, powerhs - 64, GAMEMODE.Colors_default, TEXT_ALIGN_LEFT) end
 
@@ -1224,10 +1229,12 @@ function fnafgmChangeMap(map)
 end
 
 function fnafgmCamLight(id, rstate)
-	net.Start("fnafgmCamLight")
-		net.WriteFloat(id)
-		net.WriteBool(rstate)
-	net.SendToServer()
+    if id != nil then
+        net.Start("fnafgmCamLight")
+        net.WriteFloat(id)
+        net.WriteBool(rstate)
+        net.SendToServer()
+    end
 end
 
 net.Receive("fnafgmNotif", function(len)
@@ -1279,6 +1286,7 @@ net.Receive("fnafgmAnimatronicTauntSnd", function(len)
 
 	local ply = LocalPlayer()
 
+	if not IsValid(ply) or not ply:IsPlayer() then return end
 	if ply:Team() == TEAM_CONNECTING or ply:Team() == TEAM_UNASSIGNED then return end
 
 	local a = net.ReadInt(5)
